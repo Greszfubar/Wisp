@@ -1,0 +1,11 @@
+#!/bin/bash
+# Ad-hoc signed builds carry no notarisation ticket, so strip the quarantine flag
+# the download put there. Without this the first launch is refused outright.
+/usr/bin/xattr -dr com.apple.quarantine "/Applications/Wisp.app" 2>/dev/null || true
+
+# Launch as the installing user, not as root — a root-owned menu bar app would be invisible.
+USER_NAME=$(/usr/bin/stat -f "%Su" /dev/console)
+if [ -n "$USER_NAME" ] && [ "$USER_NAME" != "root" ]; then
+  /usr/bin/su "$USER_NAME" -c '/usr/bin/open -a "/Applications/Wisp.app"' 2>/dev/null || true
+fi
+exit 0

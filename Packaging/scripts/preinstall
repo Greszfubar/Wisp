@@ -1,0 +1,4 @@
+#!/bin/bash
+# A running copy would keep its event tap and hold the old binary open.
+/usr/bin/pkill -f "Wisp.app/Contents/MacOS/Wisp" 2>/dev/null || true
+exit 0

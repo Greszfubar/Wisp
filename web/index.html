@@ -1,0 +1,532 @@
+<title>Wisp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400;12..96,75..100,600;12..96,75..100,800&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root {
+  --paper:      #EFF0EC;
+  --surface:    #F7F8F5;
+  --ink:        #15181B;
+  --graphite:   #626A6E;
+  --hairline:   #D6D8D2;
+  --signal:     #0B6E62;
+  --signal-dim: #D8E7E3;
+  --shadow:     rgba(21, 24, 27, .10);
+
+  --display: "Bricolage Grotesque", "Helvetica Neue", sans-serif;
+  --body:    "Instrument Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono:    "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --col: 40rem;
+  --step: clamp(3.5rem, 7vw, 6rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #101314;
+    --surface:    #171B1C;
+    --ink:        #E8EAE6;
+    --graphite:   #8D9699;
+    --hairline:   #2A3032;
+    --signal:     #4FD1BC;
+    --signal-dim: #14312D;
+    --shadow:     rgba(0, 0, 0, .5);
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper:      #101314;
+  --surface:    #171B1C;
+  --ink:        #E8EAE6;
+  --graphite:   #8D9699;
+  --hairline:   #2A3032;
+  --signal:     #4FD1BC;
+  --signal-dim: #14312D;
+  --shadow:     rgba(0, 0, 0, .5);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: var(--col);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.bleed { max-width: 62rem; margin-inline: auto; padding-inline: 1.5rem; }
+
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  margin: 0;
+}
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.75rem;
+}
+
+.mark {
+  display: flex; align-items: center; gap: .55rem;
+  font-family: var(--display);
+  font-weight: 800; font-size: 1.15rem;
+  letter-spacing: -.01em;
+}
+
+.mark svg { display: block; color: var(--signal); }
+
+kbd {
+  font-family: var(--mono);
+  font-size: .74rem;
+  padding: .3rem .55rem;
+  border: 1px solid var(--hairline);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--graphite);
+  white-space: nowrap;
+}
+
+/* ---------- hero ---------- */
+
+.hero { padding-block: clamp(2rem, 6vw, 4.5rem) var(--step); }
+
+.hero h1 {
+  font-size: clamp(2.9rem, 8vw, 5.1rem);
+  font-weight: 800;
+  line-height: .95;
+  letter-spacing: -.035em;
+  margin-block: 1.25rem .9rem;
+}
+
+.hero h1 em { font-style: normal; color: var(--signal); }
+
+.lede {
+  font-size: 1.2rem;
+  color: var(--graphite);
+  max-width: 34rem;
+  margin: 0;
+}
+
+/* ---------- demo ---------- */
+
+.demo {
+  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: 0 24px 60px -32px var(--shadow);
+  overflow: hidden;
+}
+
+.demo-chrome {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .7rem 1rem;
+  border-bottom: 1px solid var(--hairline);
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--graphite);
+}
+
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--hairline); }
+
+.demo-body { padding: clamp(1.5rem, 4vw, 2.25rem); min-height: 13rem; display: grid; gap: 1.4rem; align-content: start; }
+
+.pill {
+  display: inline-flex; align-items: center; gap: .7rem;
+  padding: .55rem .9rem;
+  border-radius: 12px;
+  border: 1px solid var(--hairline);
+  background: var(--paper);
+  width: fit-content;
+}
+
+#wave { display: block; width: 46px; height: 22px; }
+
+.pill-label {
+  font-family: var(--mono);
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+
+.pill.is-edit .pill-label { color: var(--signal); }
+
+.transcript { font-size: 1.15rem; line-height: 1.55; margin: 0; min-height: 3.4rem; }
+
+.transcript.raw { color: var(--graphite); }
+
+.transcript.clean { color: var(--ink); }
+
+.transcript .caret {
+  display: inline-block; width: 2px; height: 1.05em;
+  background: var(--signal); vertical-align: -.18em;
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes blink { 50% { opacity: 0; } }
+
+.arrow {
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--signal);
+  display: flex; align-items: center; gap: .5rem;
+}
+
+.arrow::before { content: ""; height: 1px; width: 1.75rem; background: var(--signal); opacity: .5; }
+
+/* ---------- sections ---------- */
+
+section { padding-block: var(--step); border-top: 1px solid var(--hairline); }
+
+section h2 {
+  font-size: clamp(1.9rem, 4.5vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: -.025em;
+  line-height: 1.08;
+  margin-block: .9rem 1rem;
+}
+
+section p { color: var(--graphite); margin-block: 0 1rem; }
+
+section p strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- steps ---------- */
+
+.steps { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; gap: 1.5rem; counter-reset: s; }
+
+.steps li {
+  display: grid;
+  grid-template-columns: 2.25rem 1fr;
+  gap: 1rem;
+  align-items: start;
+  counter-increment: s;
+}
+
+.steps li::before {
+  content: counter(s, decimal-leading-zero);
+  font-family: var(--mono); font-size: .8rem;
+  color: var(--signal);
+  padding-top: .2rem;
+}
+
+.steps h3 { font-size: 1.05rem; font-weight: 600; letter-spacing: -.01em; }
+
+.steps p { margin: .2rem 0 0; font-size: .97rem; }
+
+/* ---------- table ---------- */
+
+.table-scroll { overflow-x: auto; margin-top: 1.75rem; }
+
+table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: .93rem; }
+
+th, td { text-align: left; padding: .8rem .9rem; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+
+th {
+  font-family: var(--mono); font-weight: 500; font-size: .7rem;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--graphite);
+}
+
+td:first-child { font-weight: 600; white-space: nowrap; }
+
+td:last-child { color: var(--graphite); }
+
+.tag {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .06em;
+  padding: .2rem .45rem; border-radius: 5px;
+  background: var(--signal-dim); color: var(--signal);
+  white-space: nowrap;
+}
+
+/* ---------- install ---------- */
+
+pre {
+  font-family: var(--mono); font-size: .84rem;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  padding: 1.1rem 1.25rem;
+  overflow-x: auto;
+  margin-block: 1.5rem;
+  line-height: 1.7;
+}
+
+pre .c { color: var(--graphite); }
+
+.reqs { list-style: none; padding: 0; margin: 1.5rem 0 0; display: grid; gap: .55rem; }
+
+.reqs li { display: flex; gap: .7rem; align-items: baseline; font-size: .95rem; color: var(--graphite); }
+
+.reqs li::before { content: "—"; color: var(--signal); }
+
+footer {
+  border-top: 1px solid var(--hairline);
+  padding-block: 2.5rem 3.5rem;
+  font-family: var(--mono); font-size: .74rem;
+  color: var(--graphite);
+  display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; justify-content: space-between;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="mark">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <path d="M2 10h2.2M6.4 5.5v9M10 2.5v15M13.6 6.5v7M17.8 9h.2" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      Wisp
+    </div>
+    <kbd>hold ⌥</kbd>
+  </header>
+</div>
+
+<div class="wrap hero">
+  <p class="eyebrow">On-device dictation for macOS</p>
+  <h1>Your hands are the <em>bottleneck</em>.</h1>
+  <p class="lede">Hold a key. Say the thing. Finished text lands in whatever app you were already using — cleaned up, punctuated, and never sent anywhere.</p>
+</div>
+
+<div class="bleed">
+  <div class="demo">
+    <div class="demo-chrome">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <span id="ctx" style="margin-left:.4rem">Slack — #engineering</span>
+    </div>
+    <div class="demo-body">
+      <div class="pill" id="pill">
+        <canvas id="wave" width="92" height="44" aria-hidden="true"></canvas>
+        <span class="pill-label" id="pill-label">Listening</span>
+      </div>
+      <p class="transcript raw" id="raw"></p>
+      <div class="arrow" id="arrow" style="visibility:hidden">Wisp writes</div>
+      <p class="transcript clean" id="clean"></p>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section>
+    <p class="eyebrow">The cleanup pass</p>
+    <h2>Speech is messy. Nobody wants a transcript.</h2>
+    <p>Every other dictation tool hands you exactly what you said, false starts and all — so you spend the time you saved fixing commas. Wisp runs the raw transcript through Apple's on-device model before a single character reaches your cursor.</p>
+    <p>Filler words go. Punctuation and capitalisation appear. <strong>"new paragraph"</strong> becomes a new paragraph instead of the literal words. Your phrasing and your meaning stay exactly as you said them — it's a typist, not a ghostwriter.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">Editing by voice</p>
+    <h2>Select something first, and Wisp rewrites instead.</h2>
+    <p>There's no command word to remember and no mode to toggle. Wisp checks whether the app you're in has text selected the moment you press the key.</p>
+    <p>Nothing selected, and your words are dictated. Something selected, and your words are treated as an <strong>instruction for that text</strong> — "make this a bullet list", "cut it down to two sentences", "say this more warmly" — and the selection is replaced with the result.</p>
+  </section>
+
+  <section>
+    <p class="eyebrow">One gesture, start to finish</p>
+    <h2>How it works</h2>
+    <ol class="steps">
+      <li>
+        <div>
+          <h3>Hold the key</h3>
+          <p>Right ⌥ by default, or Right ⌘ or fn. Wisp notes which app you're in and whether you've selected anything.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Talk</h3>
+          <p>Words appear in a small floating pill as they're recognised, so you can see it's hearing you. Recognition runs while you speak, not after.</p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <h3>Let go</h3>
+          <p>The cleanup pass runs and the finished text is pasted at your cursor. Your clipboard is put back exactly as you left it.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <p class="eyebrow">Architecture</p>
+    <h2>Nothing leaves the machine.</h2>
+    <p>This isn't a privacy policy promising deletion — there's no server to delete anything from. Wisp has no account, no telemetry and no network calls after the first model download.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Stage</th><th>Runs on</th><th>Where</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Capture</td><td>AVAudioEngine</td><td><span class="tag">on device</span></td></tr>
+          <tr><td>Recognition</td><td>Parakeet TDT v3, Neural Engine</td><td><span class="tag">on device</span></td></tr>
+          <tr><td>Cleanup</td><td>Apple Intelligence, on-device model</td><td><span class="tag">on device</span></td></tr>
+          <tr><td>Insertion</td><td>Pasteboard, restored after</td><td><span class="tag">on device</span></td></tr>
+          <tr><td>History</td><td>JSON in Application Support</td><td><span class="tag">on device</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <p class="eyebrow">Install</p>
+    <h2>Build it and run it.</h2>
+    <pre><span class="c"># first build downloads the Parakeet models (~600 MB)</span>
+git clone …/Wisp &amp;&amp; cd Wisp
+./Scripts/build.sh
+open build/Wisp.app</pre>
+    <p>Wisp lives in the menu bar with no Dock icon. macOS will ask for Microphone access, and for Accessibility — it needs that to see your hotkey and to paste into other apps.</p>
+    <ul class="reqs">
+      <li>macOS 26 or later, Apple silicon</li>
+      <li>Apple Intelligence enabled for the cleanup pass (dictation still works without it)</li>
+      <li>Roughly 600 MB on disk for the speech models</li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>Wisp — voice input that stays on your Mac</span>
+    <span>Built for one person, in Swift</span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const scenes = [
+    {
+      ctx: "Slack — #engineering",
+      mode: "Listening",
+      edit: false,
+      raw: "so um i think we should probably ship the the beta on friday if that's okay with everyone",
+      clean: "I think we should ship the beta on Friday, if that's OK with everyone."
+    },
+    {
+      ctx: "Mail — Draft",
+      mode: "Editing selection",
+      edit: true,
+      raw: "make this friendlier and cut it in half",
+      clean: "Thanks for waiting — the revised deck is attached, and I'd love your thoughts."
+    }
+  ];
+
+  const rawEl   = document.getElementById("raw");
+  const cleanEl = document.getElementById("clean");
+  const arrowEl = document.getElementById("arrow");
+  const pill    = document.getElementById("pill");
+  const label   = document.getElementById("pill-label");
+  const ctxEl   = document.getElementById("ctx");
+
+  /* --- waveform --- */
+  const canvas = document.getElementById("wave");
+  const g = canvas.getContext("2d");
+  const BARS = 5;
+  let amplitude = 0, target = 0, t = 0;
+
+  function accent() {
+    return getComputedStyle(document.documentElement).getPropertyValue("--signal").trim() || "#0B6E62";
+  }
+
+  function draw() {
+    const w = canvas.width, h = canvas.height;
+    g.clearRect(0, 0, w, h);
+    g.fillStyle = accent();
+    amplitude += (target - amplitude) * 0.12;
+    t += 0.22;
+
+    const weight = [0.45, 0.78, 1, 0.78, 0.45];
+    const barW = 6, gap = 5;
+    const totalW = BARS * barW + (BARS - 1) * gap;
+    const x0 = (w - totalW) / 2;
+
+    for (let i = 0; i < BARS; i++) {
+      const wobble = 0.55 + 0.45 * Math.sin(t + i * 1.1);
+      const bh = Math.max(6, amplitude * weight[i] * wobble * (h - 8));
+      const x = x0 + i * (barW + gap);
+      const y = (h - bh) / 2;
+      g.beginPath();
+      g.roundRect(x, y, barW, bh, barW / 2);
+      g.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  if (canvas.getContext) requestAnimationFrame(draw);
+
+  /* --- scene loop --- */
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+
+  async function type(el, text, speed) {
+    el.textContent = "";
+    const caret = document.createElement("span");
+    caret.className = "caret";
+    el.appendChild(caret);
+    for (let i = 0; i < text.length; i++) {
+      caret.insertAdjacentText("beforebegin", text[i]);
+      if (i % 2 === 0) await wait(speed);
+    }
+    caret.remove();
+  }
+
+  async function play(scene) {
+    ctxEl.textContent = scene.ctx;
+    label.textContent = scene.mode;
+    pill.classList.toggle("is-edit", scene.edit);
+    rawEl.textContent = "";
+    cleanEl.textContent = "";
+    arrowEl.style.visibility = "hidden";
+
+    target = 0.85;
+    await type(rawEl, scene.raw, 26);
+    await wait(500);
+
+    target = 0;
+    label.textContent = scene.edit ? "Rewriting…" : "Tidying up…";
+    await wait(900);
+
+    arrowEl.style.visibility = "visible";
+    label.textContent = "Inserted";
+    await type(cleanEl, scene.clean, 16);
+    await wait(3200);
+  }
+
+  async function loop() {
+    let i = 0;
+    while (true) {
+      await play(scenes[i % scenes.length]);
+      i++;
+    }
+  }
+
+  if (reduced) {
+    const s = scenes[0];
+    ctxEl.textContent = s.ctx;
+    label.textContent = "Inserted";
+    rawEl.textContent = s.raw;
+    cleanEl.textContent = s.clean;
+    arrowEl.style.visibility = "visible";
+    target = 0.5;
+  } else {
+    loop();
+  }
+})();
+</script>
