@@ -10,12 +10,31 @@ actor Transcriber {
     private(set) var state: State = .cold
     private var manager: SlidingWindowAsrManager?
 
+    /// Turns FluidAudio's phase enum into something worth showing a person.
+    private static func describe(_ phase: DownloadPhase) -> String {
+        switch phase {
+        case .listing:
+            return "Finding model files…"
+        case .downloading(let done, let total):
+            return total > 0 ? "Downloading file \(done + 1) of \(total)" : "Downloading…"
+        case .compiling(let name):
+            return "Compiling \(name)…"
+        }
+    }
+
     /// Downloads (first run only) and loads the Parakeet models.
-    func prepare() async throws {
+    /// - Parameter onProgress: fraction in 0...1 and a human-readable phase.
+    ///   Called on an arbitrary queue.
+    func prepare(onProgress: @escaping @Sendable (Double, String) -> Void = { _, _ in }) async throws {
         guard state == .cold else { return }
         state = .loading
         do {
-            let models = try await AsrModels.downloadAndLoad(version: .v3)
+            let models = try await AsrModels.downloadAndLoad(
+                version: .v3,
+                progressHandler: { progress in
+                    onProgress(progress.fractionCompleted, Self.describe(progress.phase))
+                }
+            )
             let manager = SlidingWindowAsrManager(config: .streaming)
             try await manager.loadModels(models)
             self.manager = manager

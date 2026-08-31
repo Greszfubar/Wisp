@@ -16,5 +16,5 @@
     <choice id="default" title="Wisp">
         <pkg-ref id="com.evan.wisp"/>
     </choice>
-    <pkg-ref id="com.evan.wisp" version="0.1.0" onConclusion="none">Wisp-component.pkg</pkg-ref>
+    <pkg-ref id="com.evan.wisp" version="0.1.1" onConclusion="none">Wisp-component.pkg</pkg-ref>
 </installer-gui-script>

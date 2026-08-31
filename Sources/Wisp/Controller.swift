@@ -12,6 +12,9 @@ final class Controller: ObservableObject {
     @Published private(set) var status: String = "Not set up yet"
     @Published private(set) var isReady = false
     @Published private(set) var isPreparing = false
+    /// 0...1 while the speech model downloads, for the onboarding bar.
+    @Published private(set) var modelProgress: Double = 0
+    @Published private(set) var modelPhase: String = ""
 
     private let hotkey: HotkeyMonitor
     private let audio = AudioCapture()
@@ -58,7 +61,13 @@ final class Controller: ObservableObject {
         defer { isPreparing = false }
 
         do {
-            try await transcriber.prepare()
+            try await transcriber.prepare { [weak self] fraction, phase in
+                Task { @MainActor in
+                    self?.modelProgress = fraction
+                    self?.modelPhase = phase
+                }
+            }
+            modelProgress = 1
             isReady = true
             status = "Hold \(Settings.shared.trigger.label) to talk"
         } catch {

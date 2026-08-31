@@ -152,19 +152,41 @@ private struct WelcomeView: View {
                 action: permissions.accessibility ? nil : ("Open Settings", openAccessibility)
             )
 
-            StepRow(
-                title: "Speech model",
-                detail: modelDetail,
-                done: controller.isReady,
-                busy: controller.isPreparing,
-                action: modelAction
-            )
+            VStack(alignment: .leading, spacing: 9) {
+                StepRow(
+                    title: "Speech model",
+                    detail: modelDetail,
+                    done: controller.isReady,
+                    busy: controller.isPreparing,
+                    action: modelAction
+                )
+
+                if controller.isPreparing {
+                    VStack(alignment: .leading, spacing: 5) {
+                        ProgressView(value: controller.modelProgress)
+                            .progressViewStyle(.linear)
+
+                        HStack(spacing: 6) {
+                            Text(controller.modelPhase.isEmpty ? "Starting…" : controller.modelPhase)
+                            Spacer(minLength: 8)
+                            Text("\(Int(controller.modelProgress * 100))%")
+                                .monospacedDigit()
+                        }
+                        .font(.system(size: 11))
+                        .foregroundStyle(.secondary)
+                    }
+                    // Line up under the step's text rather than its status marker.
+                    .padding(.leading, 32)
+                    .transition(.opacity)
+                }
+            }
+            .animation(.easeOut(duration: 0.2), value: controller.isPreparing)
         }
     }
 
     private var modelDetail: String {
         if controller.isReady { return "Parakeet is loaded and running on the Neural Engine." }
-        if controller.isPreparing { return "Downloading — this is about 600 MB and happens once." }
+        if controller.isPreparing { return "About 600 MB, downloaded once." }
         if !permissions.allGranted { return "Available once the permissions above are granted." }
         return "About 600 MB, downloaded once, then it works offline."
     }

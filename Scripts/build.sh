@@ -26,6 +26,7 @@ rm -rf "$STAGE_APP" "$APP"
 mkdir -p "$STAGE_APP/Contents/MacOS" "$STAGE_APP/Contents/Resources" "$(dirname "$APP")"
 cp "$BIN" "$STAGE_APP/Contents/MacOS/Wisp"
 cp "$ROOT/Resources/Info.plist" "$STAGE_APP/Contents/Info.plist"
+cp "$ROOT/Resources/Wisp.icns" "$STAGE_APP/Contents/Resources/Wisp.icns"
 printf 'APPL????' > "$STAGE_APP/Contents/PkgInfo"
 xattr -cr "$STAGE_APP" 2>/dev/null || true
 
@@ -35,7 +36,13 @@ echo "==> Signing"
 codesign --force --deep --sign - \
          --identifier com.evan.wisp \
          --options runtime \
+         --entitlements "$ROOT/Resources/Wisp.entitlements" \
          "$STAGE_APP" 2>&1 | sed 's/^/    /'
+
+# The hardened runtime silently blocks the microphone if this is missing, and the
+# failure looks exactly like "the permission prompt never appears".
+codesign -d --entitlements - "$STAGE_APP" 2>/dev/null | grep -q "audio-input" \
+  || { echo "!! audio-input entitlement missing from signature"; exit 1; }
 
 codesign --verify --strict "$STAGE_APP" || { echo "!! signature invalid"; exit 1; }
 

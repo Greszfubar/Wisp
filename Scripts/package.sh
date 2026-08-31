@@ -7,7 +7,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-VERSION="0.1.0"
+VERSION="0.1.1"
 OUT="$ROOT/dist"
 # Staged outside the repo for the same iCloud/FinderInfo reason as build.sh.
 STAGE="${TMPDIR:-/tmp}wisp-pkgroot"
